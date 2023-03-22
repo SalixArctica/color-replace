@@ -38,7 +38,12 @@ export const parseHexCodeToChannels = (hexCode) => {
 export const isGrayScale = (hexCode) => {
 
   const channels = parseHexCodeToChannels(hexCode);
-  return channels.red === channels.blue && channels.blue === channels.green;
+  const rgDiff = Math.abs(channels.red - hex2Channels.green);
+  const rbDiff = Math.abs(channels.red - hex2Channels.blue);
+  const gbDiff = Math.abs(channels.green - hex2Channels.blue);
+
+  // about the sweet spot that allows for slightly bright colors and slightly off greys 
+  return rgDiff < 5 && rbDiff < 5 && gbDiff < 5;
 }
 
 export const findBestMatch = (color) => {

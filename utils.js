@@ -8,13 +8,8 @@ const hexToNum = (hex) => {
 
 export const hexCodeDiffPercent = (hexCode1, hexCode2) => {
 
-  console.log(`comparing ${hexCode1} ${hexCode2}`);
-
   const hex1Channels = parseHexCodeToChannels(hexCode1);
   const hex2Channels = parseHexCodeToChannels(hexCode2);
-
-  console.log(hex1Channels);
-  console.log(hex2Channels);
 
   const redDiff = Math.abs(hex1Channels.red - hex2Channels.red);
   const greenDiff = Math.abs(hex1Channels.green - hex2Channels.green);

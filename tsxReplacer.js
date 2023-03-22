@@ -5,6 +5,7 @@ setupLogFile();
 
 const options = {
   files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/*.tsx',
+  ignore: '/**/*.spec.tsx',
   from: /\#[0-9a-fA-F]{3,6}/g,
   dry: true,
   to: (foundHex, _, _2, file) => {

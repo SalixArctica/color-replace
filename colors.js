@@ -6,7 +6,7 @@ export default {
   gray89: '#E4E4E4',
   gray85: '#D8D8D8',
   gray80: '#CCCCCC',
-  gray78: '#C7C7C7',
+  gray78: '#C8C7C7',
   gray60: '#999999',
   gray50: '#908e8f',
   gray47: '#777777',

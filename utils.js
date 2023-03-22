@@ -36,6 +36,7 @@ export const parseHexCodeToChannels = (hexCode) => {
 }
 
 export const isGrayScale = (hexCode) => {
+
   const channels = parseHexCodeToChannels(hexCode);
   return channels.red === channels.blue && channels.blue === channels.green;
 }

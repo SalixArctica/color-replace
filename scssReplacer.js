@@ -1,8 +1,9 @@
-import { createWriteStream } from 'fs';
+import { createWriteStream, unlinkSync } from 'fs';
 import replace from 'replace-in-file';
 import { camelCaseToKebabCase, findBestMatch } from './utils.js';
 import util from 'util';
 
+unlinkSync('./debug.log');
 const log_file = createWriteStream('./debug.log', {flags : 'w'});
 const log_stdout = process.stdout;
 
@@ -15,7 +16,6 @@ const scssOptions = {
   files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/*.scss',
   ignore: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/styles/variables/_colors.scss',
   from: /\#[0-9a-fA-F]{3,6}/g,
-  dry: true,
   to: (foundHex, a, b, file) => {
 
     const replacer = findBestMatch(foundHex);

@@ -1,3 +1,5 @@
+import themeColors from './colors.js'
+
 const hexToNum = (hex) => {
   return parseInt(hex, 16);
 }
@@ -29,15 +31,42 @@ export const parseHexCodeToChannels = (hexCode) => {
   const green = hexToNum(hex.substring(2,3));
 
   const blue = hexToNum(hex.substring(4,5));
-  
-  return {
-    red,
-    green,
-    blue,
-  }
+
+  return { red, green, blue };
 }
 
 export const isGrayScale = (hexCode) => {
   const channels = parseHexCodeToChannels(hexCode);
   return channels.red === channels.blue && channels.blue === channels.green;
+}
+
+export const findBestMatch = (color) => {
+  const colorPool = Object.keys(themeColors).map(name => ({name, color: themeColors[name]}))
+
+  return colorPool.reduce((bestMatch, current) => {
+    const diff = hexCodeDiffPercent(color, current.color);
+
+    if(bestMatch === null) {
+      return {
+        ...current,
+        diff
+      }
+    }
+
+    if(diff < bestMatch?.diff && isGrayScale(current.color) === isGrayScale(color)) {
+
+      return {
+        ...current,
+        diff
+      }
+    } else {
+      return bestMatch;
+    }
+  }, null)
+}
+
+export const camelCaseToKebabCase = (string) => {
+  return string.replace(/[A-Z]/g, (match) => {
+    return '-' + match.toLowerCase();
+  })
 }

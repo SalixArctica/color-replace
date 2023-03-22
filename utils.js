@@ -1,4 +1,6 @@
 import themeColors from './colors.js'
+import { unlinkSync, createWriteStream } from 'fs';
+import util from 'util';
 
 const hexToNum = (hex) => {
   return parseInt(hex, 16);
@@ -6,8 +8,13 @@ const hexToNum = (hex) => {
 
 export const hexCodeDiffPercent = (hexCode1, hexCode2) => {
 
+  console.log(`comparing ${hexCode1} ${hexCode2}`);
+
   const hex1Channels = parseHexCodeToChannels(hexCode1);
   const hex2Channels = parseHexCodeToChannels(hexCode2);
+
+  console.log(hex1Channels);
+  console.log(hex2Channels);
 
   const redDiff = Math.abs(hex1Channels.red - hex2Channels.red);
   const greenDiff = Math.abs(hex1Channels.green - hex2Channels.green);
@@ -20,17 +27,17 @@ export const hexCodeDiffPercent = (hexCode1, hexCode2) => {
 
 export const parseHexCodeToChannels = (hexCode) => {
 
-  // drop the #
+  // drop the # 
   let hex = hexCode.substring(1);
 
   // double up shortened codes
   hex = hex.length === 3 ? hex + hex : hex;
 
-  const red = hexToNum(hex.substring(0, 1));
+  const red = hexToNum(hex.substring(0, 2));
 
-  const green = hexToNum(hex.substring(2,3));
+  const green = hexToNum(hex.substring(2,4));
 
-  const blue = hexToNum(hex.substring(4,5));
+  const blue = hexToNum(hex.substring(4));
 
   return { red, green, blue };
 }
@@ -38,9 +45,9 @@ export const parseHexCodeToChannels = (hexCode) => {
 export const isGrayScale = (hexCode) => {
 
   const channels = parseHexCodeToChannels(hexCode);
-  const rgDiff = Math.abs(channels.red - hex2Channels.green);
-  const rbDiff = Math.abs(channels.red - hex2Channels.blue);
-  const gbDiff = Math.abs(channels.green - hex2Channels.blue);
+  const rgDiff = Math.abs(channels.red - channels.green);
+  const rbDiff = Math.abs(channels.red - channels.blue);
+  const gbDiff = Math.abs(channels.green - channels.blue);
 
   // about the sweet spot that allows for slightly bright colors and slightly off greys 
   return rgDiff < 5 && rbDiff < 5 && gbDiff < 5;
@@ -52,6 +59,7 @@ export const findBestMatch = (color) => {
   return colorPool.reduce((bestMatch, current) => {
     const diff = hexCodeDiffPercent(color, current.color);
 
+
     if(bestMatch === null) {
       return {
         ...current,
@@ -59,7 +67,7 @@ export const findBestMatch = (color) => {
       }
     }
 
-    if(diff < bestMatch?.diff && isGrayScale(current.color) === isGrayScale(color)) {
+    if(diff < bestMatch.diff && isGrayScale(current.color) === isGrayScale(color)) {
 
       return {
         ...current,
@@ -75,4 +83,18 @@ export const camelCaseToKebabCase = (string) => {
   return string.replace(/[A-Z]/g, (match) => {
     return '-' + match.toLowerCase();
   })
+}
+
+export const setupLogFile = () => {
+  try {
+    unlinkSync('./debug.log');
+  } catch (err) {}
+  
+  const log_file = createWriteStream('./debug.log', {flags : 'w'});
+  const log_stdout = process.stdout;
+
+  console.log = function(d) { //
+    log_file.write(util.format(d) + '\n');
+    log_stdout.write(util.format(d) + '\n');
+  };
 }

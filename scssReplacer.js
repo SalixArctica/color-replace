@@ -1,32 +1,24 @@
-import { createWriteStream, unlinkSync } from 'fs';
+import { findBestMatch, setupLogFile } from './utils.js';
 import replace from 'replace-in-file';
-import { camelCaseToKebabCase, findBestMatch } from './utils.js';
-import util from 'util';
 
-unlinkSync('./debug.log');
-const log_file = createWriteStream('./debug.log', {flags : 'w'});
-const log_stdout = process.stdout;
+setupLogFile();
 
-console.log = function(d) { //
-  log_file.write(util.format(d) + '\n');
-  log_stdout.write(util.format(d) + '\n');
-};
+const findScssVarNamesRegex = /\$((?!--)[A-z0-9-])*[, ;]/g;
 
-const scssOptions = {
-  files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/*.scss',
-  ignore: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/styles/variables/_colors.scss',
+const options = {
+  files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/_colors.scss',
+  ignore: '/**/*.spec.tsx',
   from: /\#[0-9a-fA-F]{3,6}/g,
-  to: (foundHex, a, b, file) => {
+  to: (foundHex, _, _2, file) => {
+    const replacer = findBestMatch(foundHex)
 
-    const replacer = findBestMatch(foundHex);
+    const replacementLine = '${' + 'colors.' + replacer.name + '}';
 
-    const varLine = `var(--mux-colors-${camelCaseToKebabCase(replacer.name)})`
+    console.log(`replacing ${foundHex} with ${replacer.color} formatted as ${replacementLine} in ${file.substring('/home/salix/Code/mux/mux-web/packages/dashboard-client/src'.length)}`);
 
-    console.log(`replacing ${foundHex} with ${replacer.color} formatted as ${varLine} in ${file.substring('/home/salix/Code/mux/mux-web/packages/dashboard-client/src'.length)}`);
-
-    return varLine;
+    return replacementLine;
   },
 };
 
-replace.sync(scssOptions);
+replace.sync(options);
 

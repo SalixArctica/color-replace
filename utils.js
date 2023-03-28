@@ -75,8 +75,12 @@ export const findBestMatch = (color) => {
 }
 
 export const camelCaseToKebabCase = (string) => {
-  return string.replace(/[A-Z]/g, (match) => {
+  const pass1 =  string.replace(/[A-Z]/g, (match) => {
     return '-' + match.toLowerCase();
+  })
+
+  return pass1.replace(/[A-z][0-9]/g, (match) => {
+    return match[0] + '-' + match[1];
   })
 }
 

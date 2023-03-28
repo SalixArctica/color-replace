@@ -1,4 +1,4 @@
-import { findBestMatch, setupLogFile } from './utils.js';
+import { camelCaseToKebabCase, findBestMatch, setupLogFile } from './utils.js';
 import replace from 'replace-in-file';
 import { writeFileSync } from 'fs';
 
@@ -13,7 +13,6 @@ const replacementMap = {};
 const options = {
   files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/_colors.scss',
   ignore: '/**/*.spec.tsx',
-  dry: true,
   from: wholeLineRegex,
   to: (varLine) => {
 
@@ -25,8 +24,7 @@ const options = {
     console.log(`${hex} to ${bestMatch.color} - ${colorName} to ${bestMatch.name}`);
     replacementMap[colorName] = bestMatch.name;
 
-
-    return '';
+    return `$${camelCaseToKebabCase(bestMatch.name)}: ${bestMatch.color};`;
   },
 };
 

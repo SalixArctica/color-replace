@@ -6,6 +6,29 @@ const hexToNum = (hex) => {
   return parseInt(hex, 16);
 }
 
+/**
+ * Readmean color difference algorithm
+ * @see https://www.compuphase.com/cmetric.htm
+ */
+export const redmeanColorComparison = (color1, color2) => {
+
+  const channels1 = parseColorToChannels(color1);
+  const channels2 = parseColorToChannels(color2);
+
+  const { red: r1, blue: b1, green: g1 } = channels1;
+  const { red: r2, blue: b2, green: g2 } = channels2;
+
+  const r = (r1 + r2)/2
+
+  const deltaR = r1 - r2;
+  const deltaG = g1 - g2;
+  const deltaB = b1 - b2;
+
+  const redmean = Math.sqrt((2+r/256) * deltaR^2 + 4 * deltaG^2 + (2 + (255 - r)/256) * deltaB ^ 2);
+
+  return redmean;
+}
+
 export const hexCodeDiffPercent = (hexCode1, hexCode2) => {
 
   const hex1Channels = parseHexCodeToChannels(hexCode1);
@@ -51,8 +74,9 @@ export const isGrayScale = (hexCode) => {
 export const findBestMatch = (color) => {
   const colorPool = Object.keys(themeColors).map(name => ({name, color: themeColors[name]}))
 
+
   return colorPool.reduce((bestMatch, current) => {
-    const diff = hexCodeDiffPercent(color, current.color);
+    const diff = redmeanColorComparison(color, current.color);
 
 
     if(bestMatch === null) {
@@ -62,8 +86,7 @@ export const findBestMatch = (color) => {
       }
     }
 
-    if(diff < bestMatch.diff && isGrayScale(current.color) === isGrayScale(color)) {
-
+    if(diff < bestMatch.diff) {
       return {
         ...current,
         diff
@@ -96,4 +119,31 @@ export const setupLogFile = () => {
     log_file.write(util.format(d) + '\n');
     log_stdout.write(util.format(d) + '\n');
   };
+}
+
+export const parseRgbaToChannels = (rgbaString) => {
+
+  const isRgba = !!rgbaString.match(/rgba/g);
+
+  const parts = isRgba ? rgbaString.substring(5, rgbaString.length - 1).split(", ") : rgbaString.substring(4, rgbaString.length - 1).split(", ");
+
+  const red = parseInt(parts[0]);
+  const green = parseInt(parts[1]);
+  const blue = parseInt(parts[2]);
+  const alpha = parseFloat(parts[3] || 1);
+
+  return {
+    red, green, blue
+  }
+}
+
+export const parseColorToChannels = (color) => {
+  const colorIsHex = !!color.match(/#/g);
+  const colorIsRgb = !!color.match(/rgba*/g);
+
+  if (colorIsHex) return parseHexCodeToChannels(color);
+
+  if (colorIsRgb) return parseRgbaToChannels(color);
+
+  throw new Error(`Color: ${color} could not be parsed`);
 }

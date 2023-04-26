@@ -94,6 +94,6 @@ export const swapPalette = {
 'teaRose': 'pink30',
 'classicRose': 'pink20',
 'white': 'white',
-'black': 'black',
+'black': 'gray100',
 'pinkRed': 'pink60',
 }

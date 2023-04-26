@@ -14,4 +14,4 @@ export const newColorTsRegex = /colors\.new\.([A-z0-9]*)/g
 /**
  * matches `colors.gray20` but not `colors.new.gray20` or `colors.text`
  */
-export const colorTsRegex = /colors\.(?!new)(?!text)(?!background)(?!border)(\w+)/g
+export const colorTsRegex = /colors\.(?!new)(?!text)(?!background)(?!primary)(?!border)(\w+)/g

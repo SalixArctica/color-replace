@@ -6,7 +6,7 @@ import replace from 'replace-in-file';
 setupLogFile();
 
 const options = {
-  files: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/**/*.tsx',
+  files: '/home/salix/Code/mux/mux-web/packages/mux-components-react/src/**/*.tsx',
   ignore: '/home/salix/Code/mux/mux-web/packages/dashboard-client/src/styles/_colors.tsx',
   dry: false,
   from: colorTsRegex,

@@ -4,13 +4,13 @@ export const parseRgbaToChannels = (rgbaString) => {
 
   const parts = isRgba ? rgbaString.substring(5, rgbaString.length - 1).split(", ") : rgbaString.substring(4, rgbaString.length - 1).split(", ");
 
-  const red = parseInt(parts[0]);
-  const green = parseInt(parts[1]);
-  const blue = parseInt(parts[2]);
-  const alpha = parseFloat(parts[3] || 1);
+  const R = parseInt(parts[0]);
+  const G = parseInt(parts[1]);
+  const B = parseInt(parts[2]);
+  const A = parseFloat(parts[3] || 1);
 
   return {
-    red, green, blue
+    R, G, B, A
   }
 }
 
@@ -37,13 +37,13 @@ export const parseHexCodeToChannels = (hexCode) => {
   // double up shortened codes
   hex = hex.length === 3 ? hex + hex : hex;
 
-  const red = hexToNum(hex.substring(0, 2));
+  const R = hexToNum(hex.substring(0, 2));
 
-  const green = hexToNum(hex.substring(2,4));
+  const G = hexToNum(hex.substring(2,4));
 
-  const blue = hexToNum(hex.substring(4));
+  const B = hexToNum(hex.substring(4));
 
-  return { red, green, blue };
+  return { R, G, B };
 }
 
 const hexToNum = (hex) => {
@@ -53,5 +53,5 @@ const hexToNum = (hex) => {
 export const rgbaToRgb = (rgbaString) => {
   const channels = parseRgbaToChannels(rgbaString);
 
-  return `rgb(${channels.red}, ${channels.green}, ${channels.blue})`
+  return `rgb(${channels.R}, ${channels.G}, ${channels.B})`
 }

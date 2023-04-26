@@ -1,5 +1,6 @@
 import themeColors from './colors.js';
 import { parseColorToChannels, rgbaToRgb } from './parse.js';
+import diff from 'color-diff';
 
 /**
  * Readmean color difference algorithm
@@ -15,11 +16,17 @@ export const redmeanColorComparison = (color1, color2) => {
 
   const r = (r1 + r2)/2
 
-  const deltaR = Math.abs(r1 - r2);
-  const deltaG = Math.abs(g1 - g2);
-  const deltaB = Math.abs(b1 - b2);
+  const deltaR = r1 - r2;
+  const deltaG = g1 - g2;
+  const deltaB = b1 - b2;
 
-  const redmean = Math.sqrt((2+r/256) * deltaR^2 + 4 * deltaG^2 + (2 + (255 - r)/256) * deltaB ^ 2);
+  const redmean = Math.sqrt(Math.abs((2+r/256) * deltaR^2 + 4 * deltaG^2 + (2 + (255 - r)/256) * deltaB ^ 2));
+
+  const asbDeltaR = Math.abs(deltaR);
+  const absDeltaG = Math.abs(deltaG);
+  const absDeltaB = Math.abs(deltaB);
+
+  const redmeanAbs = Math.sqrt((2+r/256) * asbDeltaR^2 + 4 * absDeltaG^2 + (2 + (255 - r)/256) * absDeltaB ^ 2);
 
   return redmean;
 }
@@ -39,30 +46,12 @@ export const hexCodeDiffPercent = (hexCode1, hexCode2) => {
 }
 
 export const findBestMatch = (color) => {
-  const colorPool = Object.keys(themeColors).map(name => ({name, color: themeColors[name]}))
+  const colorPool = Object.keys(themeColors).map(name => ({name, ...parseColorToChannels(themeColors[name])}));
 
+  const channels = parseColorToChannels(color);
+  delete channels.A;
 
-  return colorPool.reduce((bestMatch, current) => {
-    const diff = redmeanColorComparison(color, current.color);
+  const match = diff.closest(channels, colorPool);
 
-
-
-    console.log(`${rgbaToRgb(color)} ~ ${current.color} diff is: ${diff}`);
-
-    if(bestMatch === null) {
-      return {
-        ...current,
-        diff
-      }
-    }
-
-    if(diff < bestMatch.diff) {
-      return {
-        ...current,
-        diff
-      }
-    } else {
-      return bestMatch;
-    }
-  }, null)
+  return match;
 }

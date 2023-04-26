@@ -15,3 +15,11 @@ export const newColorTsRegex = /colors\.new\.([A-z0-9]*)/g
  * matches `colors.gray20` but not `colors.new.gray20` or `colors.text`
  */
 export const colorTsRegex = /colors\.(?!new)(?!text)(?!background)(?!primary)(?!border)(\w+)/g
+
+export const themedRegex = /themed\(colors,\s*{[\sA-z\:'\d,\.\-]*}\)/g
+
+export const extractDarkRegex = /dark: '([.\w]+)/
+export const extractLightRegex = /light: '([.\w]+)/
+
+export const extractRedesignDark = /'redesign-dark': '([.\w]+)/
+export const extractRedesignLight = /'redesign-light': '([.\w]+)/

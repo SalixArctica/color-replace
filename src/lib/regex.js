@@ -6,6 +6,8 @@ export const rgbaRegex = /rgba*\(([0-9]{1,3}), ?([0-9]{1,3}), ?([0-9]{1,3}), ?([
 
 export const cssVarRegex = /var\(--mux-colors-([A-z0-9\-]*)\)/g
 
+export const scssVarRegex = /\$([\w\d\-]+)/g
+
 /**
  * matches `colors.new.gray100` and `colors.new.tealHover` regardless of context
  */
@@ -17,6 +19,8 @@ export const newColorTsRegex = /colors\.new\.([A-z0-9]*)/g
 export const colorTsRegex = /colors\.(?!new)(?!text)(?!background)(?!primary)(?!border)(\w+)/g
 
 export const themedRegex = /themed\(colors,\s*{[\sA-z\:'\d,\.\-]*}\)/g
+
+export const themedNoColorsRegex = /themed\(\s*{[\sA-z\:'\d,\.\-]*}\)/g
 
 export const extractDarkRegex = /dark: '([.\w]+)/
 export const extractLightRegex = /light: '([.\w]+)/
